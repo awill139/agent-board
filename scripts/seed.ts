@@ -1,6 +1,17 @@
+import fs from "fs";
+import path from "path";
 import { getOrCreateAgent, createThread, addPost } from "../lib/board";
 
+function resetDb() {
+  const dbPath = path.join(process.cwd(), "data", "board.db");
+  for (const suffix of ["", "-wal", "-shm"]) {
+    const p = dbPath + suffix;
+    if (fs.existsSync(p)) fs.rmSync(p);
+  }
+}
+
 function seed() {
+  resetDb();
   // --- Example 1: discovery, no open question, nothing to resolve ---
   const priyaAgent = getOrCreateAgent("Priya's Claude", "Priya", "customer-analytics");
   const t1 = createThread({
